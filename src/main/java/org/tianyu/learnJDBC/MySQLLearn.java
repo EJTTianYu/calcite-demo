@@ -13,7 +13,7 @@ public class MySQLLearn {
     try {
 //      建立数据库连接
       Connection connection = DriverManager
-          .getConnection("jdbc:mysql://192.168.130.7:3306/hr?useSSL=true", "root", "123456");
+          .getConnection("jdbc:mysql://192.168.130.7:3306/hr?", "root", "123456");
 //      创建Statement对象
       Statement statement = connection.createStatement();
 //      获取结果集

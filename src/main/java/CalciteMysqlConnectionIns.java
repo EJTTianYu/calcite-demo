@@ -31,19 +31,24 @@ public class CalciteMysqlConnectionIns {
 
     Class.forName("com.mysql.jdbc.Driver");
     BasicDataSource dataSource = new BasicDataSource();
-    dataSource.setUrl("jdbc:mysql://192.168.130.7/sql_learn");
+    dataSource.setUrl("jdbc:mysql://192.168.130.7/hr");
     dataSource.setUsername("root");
     dataSource.setPassword("123456");
-    Schema schema = JdbcSchema.create(rootSchema, "ex", dataSource, null, "sql_learn");
+    Schema schema = JdbcSchema.create(rootSchema, "ex", dataSource, null, "hr");
 
     rootSchema.add("ex", schema);
 //    System.out.println(calciteConnection.getMetaData());
     DatabaseMetaData databaseMetaData = calciteConnection.getMetaData();
+    ResultSet rs=databaseMetaData.getTables(null,null,"%",new String[]{"TABLE"});
+    ResultSet rs1=databaseMetaData.getColumns(null,null,"depts","%");
+
 //    ResultSet rs = databaseMetaData.getTables(null, null, "%", new String[]{"TABLE"});
     Statement statement = calciteConnection.createStatement();
     ResultSet resultSet = statement.executeQuery(
-        "select * from ex.primary_test");
+        "select * from ex.depts");
 
+    output(rs,System.out);
+    output(rs1,System.out);
     output(resultSet, System.out);
     resultSet.close();
     statement.close();
@@ -53,8 +58,10 @@ public class CalciteMysqlConnectionIns {
   private static void output(ResultSet resultSet, PrintStream out) throws SQLException {
     final ResultSetMetaData metaData = resultSet.getMetaData();
     final int columnCount = metaData.getColumnCount();
-    out.println(metaData.getColumnLabel(1) + " " + metaData.getColumnLabel(2));
-    out.println(metaData.getColumnTypeName(1) + " " + metaData.getColumnTypeName(2));
+    for (int i=0;i<columnCount;i++){
+      out.print(metaData.getColumnLabel(i+1)+" ");
+    }
+    out.println();
     while (resultSet.next()) {
       for (int i = 1; ; i++) {
         out.print(resultSet.getString(i));
