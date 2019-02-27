@@ -37,6 +37,7 @@ public class CalcitePGConnection {
     dataSource.setUsername("postgres");
     dataSource.setPassword("postgres");
     dataSource.addConnectionProperty("remarks","true");
+    dataSource.addConnectionProperty("useInformationSchema","true");
 //    dataSource.;
     /**
      * 此处创建Schema的时候，param1指定父模式，param5的schema为数据库中的模式，需要匹配，param2暴露出来的name用作下面的rootSchema的add方法
