@@ -45,7 +45,7 @@ public class PGConnection {
    * @param indexs 用于指定要输出的int列
    */
 
-  public void outputResult(ResultSet resultSet, PrintStream out, int[] indexs) throws Exception {
+  public static void outputResult(ResultSet resultSet, PrintStream out, int[] indexs) throws Exception {
     final ResultSetMetaData metaData = resultSet.getMetaData();
     final int columnCount = metaData.getColumnCount();
     for (int i : indexs) {
@@ -68,12 +68,21 @@ public class PGConnection {
    * @param indexs 用于指定要输出的String列
    */
 
-  public void outputResult(ResultSet resultSet, PrintStream out, String[] indexs) throws Exception {
+  public static void outputResult(ResultSet resultSet, PrintStream out, String[] indexs) throws Exception {
     final ResultSetMetaData metaData = resultSet.getMetaData();
     final int columnCount = metaData.getColumnCount();
+    for (String i : indexs) {
+      out.print(i + " ");
+    }
     out.println();
     while (resultSet.next()) {
       for (String i : indexs) {
+//        if (resultSet.getString(i)!=null){
+//          out.print(resultSet.getString(i).split("\\s+")[0].split("\\(")[0] + " ");
+//        }
+//        else {
+//          out.print(resultSet.getString(i)+" ");
+//        }
         out.print(resultSet.getString(i)+" ");
       }
       out.println();

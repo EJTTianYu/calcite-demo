@@ -1,3 +1,4 @@
+import dwf3s.PGConnection;
 import java.io.PrintStream;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -15,19 +16,18 @@ import org.apache.commons.dbcp2.BasicDataSource;
 
 public class CalciteMysqlConnectionIns {
 
-  public static void main(String[] args) throws ClassNotFoundException, SQLException {
+  public static void main(String[] args) throws Exception {
 
     Class.forName("org.apache.calcite.jdbc.Driver");
 
     Properties info = new Properties();
     info.setProperty("lex", "JAVA");
+    info.setProperty("remarks","true");
+    info.setProperty("parserFactory","org.apache.calcite.sql.parser.ddl.SqlDdlParserImpl#FACTORY");
     Connection connection = DriverManager.getConnection("jdbc:calcite:", info);
     CalciteConnection calciteConnection = connection.unwrap(CalciteConnection.class);
+    System.out.println(calciteConnection.getProperties());
     SchemaPlus rootSchema = calciteConnection.getRootSchema();
-
-    // 本地Schema.
-    // Schema schema = ReflectiveSchema.create(calciteConnection, rootSchema, "hr",
-    // new HrSchema());
 
     Class.forName("com.mysql.jdbc.Driver");
     BasicDataSource dataSource = new BasicDataSource();
@@ -37,42 +37,22 @@ public class CalciteMysqlConnectionIns {
     Schema schema = JdbcSchema.create(rootSchema, "ex", dataSource, null, "hr");
 
     rootSchema.add("ex", schema);
-//    System.out.println(calciteConnection.getMetaData());
     DatabaseMetaData databaseMetaData = calciteConnection.getMetaData();
-    ResultSet rs=databaseMetaData.getTables(null,null,"%",new String[]{"TABLE"});
-    ResultSet rs1=databaseMetaData.getColumns(null,null,"depts","%");
+//    ResultSet rs=databaseMetaData.getTables(null,null,"%",new String[]{"TABLE"});
+//    ResultSet rs1 = databaseMetaData.getColumns(null, null, "dwf_test", "%");
 
-//    ResultSet rs = databaseMetaData.getTables(null, null, "%", new String[]{"TABLE"});
     Statement statement = calciteConnection.createStatement();
-    ResultSet resultSet = statement.executeQuery(
-        "select * from ex.depts");
+    ResultSet resultSet=statement.executeQuery("select * from ex.emps");
+    PGConnection.outputResult(resultSet,System.out,new int[]{1,2,3});
+    statement.executeUpdate(
+        "create table ex.emp (id varchar(255) ,test int )");
+    statement.executeUpdate("insert into ex.emp values ('test',1)");
 
-    output(rs,System.out);
-    output(rs1,System.out);
-    output(resultSet, System.out);
-    resultSet.close();
+//    PGConnection.outputResult(rs,System.out,new String[]{"TABLE_NAME","REMARKS"});
+//    PGConnection.outputResult(rs1, System.out, new String[]{"TABLE_NAME","COLUMN_NAME","TYPE_NAME"});
+//    statement.close();
     statement.close();
     connection.close();
-  }
-
-  private static void output(ResultSet resultSet, PrintStream out) throws SQLException {
-    final ResultSetMetaData metaData = resultSet.getMetaData();
-    final int columnCount = metaData.getColumnCount();
-    for (int i=0;i<columnCount;i++){
-      out.print(metaData.getColumnLabel(i+1)+" ");
-    }
-    out.println();
-    while (resultSet.next()) {
-      for (int i = 1; ; i++) {
-        out.print(resultSet.getString(i));
-        if (i < columnCount) {
-          out.print(", ");
-        } else {
-          out.println();
-          break;
-        }
-      }
-    }
   }
 }
 

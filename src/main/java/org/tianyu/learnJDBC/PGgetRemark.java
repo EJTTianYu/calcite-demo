@@ -1,5 +1,6 @@
 package org.tianyu.learnJDBC;
 
+import dwf3s.PGConnection;
 import java.io.PrintStream;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -21,10 +22,10 @@ public class PGgetRemark {
     properties.setProperty("useInformationSchema","true");
     Connection connection= DriverManager.getConnection(url,properties);
     DatabaseMetaData dmbd=connection.getMetaData();
-    ResultSet rs=dmbd.getTables(null,null,"%",new String[]{"TABLE"});
-    output(rs,System.out);
-    ResultSet rs1=dmbd.getColumns(null,null,"dwf%","%");
-    output(rs1,System.out);
+//    ResultSet rs=dmbd.getTables(null,null,"%",new String[]{"TABLE"});
+//    output(rs,System.out);
+    ResultSet rs1=dmbd.getColumns(null,null,"dwfT%","%");
+    PGConnection.outputResult(rs1,System.out,new String[]{"COLUMN_NAME","TYPE_NAME"});
 
   }
   private static void output(ResultSet resultSet, PrintStream out) throws SQLException {

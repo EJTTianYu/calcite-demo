@@ -1,3 +1,4 @@
+import dwf3s.PGConnection;
 import java.io.PrintStream;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -15,59 +16,39 @@ import org.apache.commons.dbcp2.BasicDataSource;
 
 public class CalciteSQLServerConnection {
 
-  public static void main(String[] args) throws ClassNotFoundException, SQLException {
+  public static void main(String[] args) throws Exception {
 
     Class.forName("org.apache.calcite.jdbc.Driver");
 
     Properties info = new Properties();
     info.setProperty("lex", "JAVA");
+    info.setProperty("remarks", "true");
+    info.setProperty("useInformationSchema", "true");
     Connection connection = DriverManager.getConnection("jdbc:calcite:", info);
     CalciteConnection calciteConnection = connection.unwrap(CalciteConnection.class);
+    System.out.println(calciteConnection.getProperties());
     SchemaPlus rootSchema = calciteConnection.getRootSchema();
 
-    // 本地Schema.
-    // Schema schema = ReflectiveSchema.create(calciteConnection, rootSchema, "hr",
-    // new HrSchema());
-
-    Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+    Class.forName("com.microsoft.");
     BasicDataSource dataSource = new BasicDataSource();
-    dataSource.setUrl("jdbc:sqlserver://");
+    dataSource.setUrl("jdbc:mysql://192.168.130.7/hr");
     dataSource.setUsername("root");
     dataSource.setPassword("123456");
-    Schema schema = JdbcSchema.create(rootSchema, "ex", dataSource, null, "sql_learn");
+    Schema schema = JdbcSchema.create(rootSchema, "ex", dataSource, null, "hr");
 
     rootSchema.add("ex", schema);
-//    System.out.println(calciteConnection.getMetaData());
     DatabaseMetaData databaseMetaData = calciteConnection.getMetaData();
-//    ResultSet rs = databaseMetaData.getTables(null, null, "%", new String[]{"TABLE"});
-    Statement statement = calciteConnection.createStatement();
-    ResultSet resultSet = statement.executeQuery(
-        "select * from ex.primary_test");
+    ResultSet rs = databaseMetaData.getTables(null, null, "%", new String[]{"TABLE"});
+    ResultSet rs1 = databaseMetaData.getColumns(null, null, "emps%", "%");
 
-    output(resultSet, System.out);
-    resultSet.close();
-    statement.close();
+//    Statement statement = calciteConnection.createStatement();
+//    ResultSet resultSet = statement.executeQuery(
+//        "select * from ex.depts limit 2 offset 1");
+
+    PGConnection.outputResult(rs, System.out, new String[]{"TABLE_NAME", "REMARKS"});
+    PGConnection
+        .outputResult(rs1, System.out, new String[]{"TABLE_NAME", "COLUMN_NAME", "REMARKS"});
+//    statement.close();
     connection.close();
   }
-
-  private static void output(ResultSet resultSet, PrintStream out) throws SQLException {
-    final ResultSetMetaData metaData = resultSet.getMetaData();
-    final int columnCount = metaData.getColumnCount();
-    out.println(metaData.getColumnLabel(1) + " " + metaData.getColumnLabel(2));
-    out.println(metaData.getColumnTypeName(1) + " " + metaData.getColumnTypeName(2));
-    while (resultSet.next()) {
-      for (int i = 1; ; i++) {
-        out.print(resultSet.getString(i));
-        if (i < columnCount) {
-          out.print(", ");
-        } else {
-          out.println();
-          break;
-        }
-      }
-    }
-  }
 }
-
-
-

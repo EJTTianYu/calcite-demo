@@ -42,7 +42,7 @@ public class CalcitePGConnection {
     /**
      * 此处创建Schema的时候，param1指定父模式，param5的schema为数据库中的模式，需要匹配，param2暴露出来的name用作下面的rootSchema的add方法
      */
-    Schema schema = JdbcSchema.create(rootSchema, "hr", dataSource, null, "PGtest");
+    Schema schema = JdbcSchema.create(rootSchema, "hr", dataSource, null, "pgtest");
 
     rootSchema.add("hr", schema);
     /**
