@@ -40,7 +40,7 @@ public class CalciteSQLServerConnection {
     DatabaseMetaData databaseMetaData = calciteConnection.getMetaData();
     ResultSet rs = databaseMetaData.getTables(null, null, "%", new String[]{"TABLE"});
     ResultSet rs1 = databaseMetaData.getColumns(null, null, "emps%", "%");
-
+//
 //    Statement statement = calciteConnection.createStatement();
 //    ResultSet resultSet = statement.executeQuery(
 //        "select * from ex.depts limit 2 offset 1");

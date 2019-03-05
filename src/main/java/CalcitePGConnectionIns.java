@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Properties;
 import org.apache.calcite.adapter.jdbc.JdbcSchema;
 import org.apache.calcite.jdbc.CalciteConnection;
@@ -33,19 +34,21 @@ public class CalcitePGConnectionIns {
     dataSource.setUrl("jdbc:postgresql://192.168.130.7:5432/postgres");
     dataSource.setUsername("postgres");
     dataSource.setPassword("postgres");
-    Schema schema = JdbcSchema.create(rootSchema, "ex", dataSource, null, "pgtest");
+    Schema schema = JdbcSchema.create(rootSchema, "pgtest", dataSource, null, "pgtest");
 
-    rootSchema.add("ex", schema);
+    rootSchema.add("pgtest", schema);
     DatabaseMetaData databaseMetaData = calciteConnection.getMetaData();
-    ResultSet rs=databaseMetaData.getTables(null,null,"%",new String[]{"TABLE"});
-    ResultSet rs1 = databaseMetaData.getColumns(null, null, "dwf_%", "%");
+//    ResultSet rs=databaseMetaData.getTables(null,null,"%",new String[]{"TABLE"});
+//    ResultSet rs1 = databaseMetaData.getColumns(null, null, "dwf_%", "%");
+    Statement statement=calciteConnection.createStatement();
+    statement.executeQuery("select * from pgtest.dwf3s limit 2 offset 1 ");
 
 //    Statement statement = calciteConnection.createStatement();
 //    ResultSet resultSet = statement.executeQuery(
 //        "select * from ex.depts limit 2 offset 1");
 
-    PGConnection.outputResult(rs,System.out,new String[]{"TABLE_NAME","REMARKS"});
-    PGConnection.outputResult(rs1, System.out, new String[]{"TABLE_NAME","COLUMN_NAME","TYPE_NAME"});
+//    PGConnection.outputResult(rs,System.out,new String[]{"TABLE_NAME","REMARKS"});
+//    PGConnection.outputResult(rs1, System.out, new String[]{"TABLE_NAME","COLUMN_NAME","TYPE_NAME"});
 //    statement.close();
     connection.close();
   }

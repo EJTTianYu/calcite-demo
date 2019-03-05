@@ -1,31 +1,34 @@
-package org.tianyu.learnJDBC;
-
-import dwf3s.PGConnection;
 import java.io.PrintStream;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Properties;
 
-public class PGgetRemark {
+public class SQLSerRemark {
 
   public static void main(String[] args) throws Exception{
-    Class.forName("com.mysql.jdbc.Driver");
-    String url="jdbc:mysql://192.168.130.7:3306/hr";
+    long startTime=System.currentTimeMillis();
+    Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+    String url="jdbc:sqlserver://192.168.130.30:1433;databaseName=iotdb";
     Properties properties=new Properties();
-    properties.setProperty("user","root");
-    properties.setProperty("password","123456");
+    properties.setProperty("user","gouwang");
+    properties.setProperty("password","gouwang");
     properties.setProperty("remarks","true");
     properties.setProperty("useInformationSchema","true");
     Connection connection= DriverManager.getConnection(url,properties);
-    DatabaseMetaData dmbd=connection.getMetaData();
+//    DatabaseMetaData dmbd=connection.getMetaData();
 //    ResultSet rs=dmbd.getTables(null,null,"%",new String[]{"TABLE"});
 //    output(rs,System.out);
-    ResultSet rs1=dmbd.getTables(null,null,"%",null);
-    PGConnection.outputResult(rs1,System.out,new String[]{"REMARKS"});
+//    ResultSet rs1=dmbd.getTables(null,null,"dwf%",null);
+//    PGConnection.outputResult(rs1,System.out,new String[]{"TABLE_NAME","REMARKS"});
+    Statement statement = connection.createStatement();
+    ResultSet resultSet=statement.executeQuery(
+        "select * from dbo.dwf_sql_test");
+    output(resultSet,System.out);
+    System.out.println(System.currentTimeMillis()-startTime);
 
   }
   private static void output(ResultSet resultSet, PrintStream out) throws SQLException {

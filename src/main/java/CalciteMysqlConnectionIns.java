@@ -34,19 +34,19 @@ public class CalciteMysqlConnectionIns {
     dataSource.setUrl("jdbc:mysql://192.168.130.7/hr");
     dataSource.setUsername("root");
     dataSource.setPassword("123456");
-    Schema schema = JdbcSchema.create(rootSchema, "ex", dataSource, null, "hr");
+    Schema schema = JdbcSchema.create(rootSchema, "hr", dataSource, null, "hr");
 
-    rootSchema.add("ex", schema);
-    DatabaseMetaData databaseMetaData = calciteConnection.getMetaData();
+    rootSchema.add("hr", schema);
+//    DatabaseMetaData databaseMetaData = calciteConnection.getMetaData();
 //    ResultSet rs=databaseMetaData.getTables(null,null,"%",new String[]{"TABLE"});
 //    ResultSet rs1 = databaseMetaData.getColumns(null, null, "dwf_test", "%");
 
     Statement statement = calciteConnection.createStatement();
-    ResultSet resultSet=statement.executeQuery("select * from ex.emps");
-    PGConnection.outputResult(resultSet,System.out,new int[]{1,2,3});
-    statement.executeUpdate(
-        "create table ex.emp (id varchar(255) ,test int )");
-    statement.executeUpdate("insert into ex.emp values ('test',1)");
+    statement.execute("insert into hr.depts_insert_data (deptno) values(40)");
+//    PGConnection.outputResult(resultSet,System.out,new int[]{1,2,3});
+//    statement.execute(
+//        "drop table hr.emps");
+//    statement.executeUpdate("insert into ex.emp values ('test',1)");
 
 //    PGConnection.outputResult(rs,System.out,new String[]{"TABLE_NAME","REMARKS"});
 //    PGConnection.outputResult(rs1, System.out, new String[]{"TABLE_NAME","COLUMN_NAME","TYPE_NAME"});

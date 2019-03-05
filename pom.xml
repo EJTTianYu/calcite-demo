@@ -67,8 +67,19 @@
     <dependency>
       <groupId>com.microsoft.sqlserver</groupId>
       <artifactId>mssql-jdbc</artifactId>
-      <version>7.2.1.jre11</version>
-      <scope>test</scope>
+      <version>6.3.1.jre8-preview</version>
+    </dependency>
+
+    <dependency>
+      <groupId>cn.edu.thu.dwf</groupId>
+      <artifactId>dwf-3s</artifactId>
+      <version>3.0.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>cn.edu.thu.dwf</groupId>
+      <artifactId>dwf-3s-postgresql</artifactId>
+      <version>3.0.1</version>
     </dependency>
 
 
